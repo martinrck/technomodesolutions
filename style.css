@@ -658,19 +658,59 @@ input:checked + .slider:before { transform: translateX(20px); background-color: 
     .nav-links {
         position: fixed; top: 0; right: -100%; width: 100vw; height: 100dvh;
         background-color: rgba(10, 8, 6, 0.98); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-        flex-direction: column; justify-content: center; align-items: center; gap: 35px;
-        transition: right 0.5s cubic-bezier(0.25, 1, 0.5, 1); z-index: 1050; margin: 0; padding: 0;
+        flex-direction: column; justify-content: center; align-items: center; gap: 20px; /* Reducido gap para pantallas chicas */
+        transition: right 0.5s cubic-bezier(0.25, 1, 0.5, 1); z-index: 1050; margin: 0; padding: 20px 0;
         border-top: none;
+        overflow-y: auto; /* Evita que el menú colapse en móviles en modo horizontal */
     }
     [data-theme="light"] .nav-links { background-color: rgba(230, 222, 209, 0.98); }
     .nav-links.active { right: 0; display: flex; }
     .nav-links li { text-align: center; width: 100%; }
-    .nav-links a { font-size: 1.5rem; letter-spacing: 2px; display: block; padding: 10px; }
+    .nav-links a { font-size: 1.3rem; letter-spacing: 2px; display: block; padding: 10px; }
+
+    /* FIX: Dropdown Behavior on Mobile */
+    .dropdown-content {
+        position: relative !important;
+        top: 0 !important; left: 0 !important; margin-left: 0 !important;
+        width: 100% !important; background: transparent !important;
+        box-shadow: none !important; border: none !important;
+        display: none; 
+    }
+    .dropdown-item:hover .dropdown-content, .dropdown-item:active .dropdown-content {
+        display: block !important;
+        animation: none !important;
+    }
+    .dropdown-content a {
+        font-size: 1.1rem !important;
+        padding: 10px !important; 
+        border-bottom: 1px solid rgba(255,255,255,0.05) !important;
+    }
+
+    /* -------------------------------------
+       FIX: NESTED SCROLLING Y COLISIONES (CRÍTICO)
+       ------------------------------------- */
+    .view-section {
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+        display: none;
+    }
+    .active-view {
+        display: block !important; /* Quitado el flex-direction column que estiraba mal los divs */
+    }
+
+    .about-premium-board, .contact-board, .service-premium-board, .detail-scroll-area {
+        height: auto !important;
+        overflow-y: visible !important;
+        flex: none !important;
+        min-height: max-content;
+        margin: 2vh 4%; padding: 4vh 5vw; border-radius: 12px;
+        padding-bottom: calc(80px + 4vh) !important; /* Espacio real para la barra social */
+    }
 
     /* -------------------------------------
        HERO: FIX ANTI-COLISIÓN
        ------------------------------------- */
-    .carousel-container { justify-content: center !important; padding: 0 !important; }
+    .carousel-container { justify-content: center !important; padding: 0 !important; height: auto !important;}
     .slide { justify-content: center !important; align-items: center !important; padding-top: 0 !important; padding-bottom: 160px !important; }
     .slide-content { padding: 0 5%; max-width: 100%; margin-left: 0; text-align: center; display: flex; flex-direction: column; align-items: center; }
     .hero-overlay-global { background: linear-gradient(180deg, rgba(3,3,3,0.85) 0%, rgba(3,3,3,0.6) 50%, rgba(3,3,3,0.85) 100%); }
@@ -688,75 +728,43 @@ input:checked + .slider:before { transform: translateX(20px); background-color: 
        VISTAS DETALLADAS (SERVICIOS Y TECH)
        ------------------------------------- */
     .detail-view {
-        padding: 100px 5% 120px 5% !important; 
-        /* SE ELIMINÓ EL DISPLAY: FLEX FORZADO AQUÍ */
-        height: 100%;
-        overflow-y: auto;
+        padding: 30px 5% 120px 5% !important; 
+        height: auto;
     }
     
-    .module-header h2 {
-        font-size: clamp(1.4rem, 6vw, 2rem) !important; /* Ligeramente reducido para que palabras largas no se corten */
-        line-height: 1.2;
-        word-wrap: break-word;
-    }
+    .module-header h2 { font-size: clamp(1.4rem, 6vw, 2rem) !important; line-height: 1.2; word-wrap: break-word; }
 
-    .tech-layout {
-        flex-direction: column !important;
-        gap: 30px !important;
-    }
+    .tech-layout { flex-direction: column !important; gap: 30px !important; padding-bottom: 80px !important;}
     
     .tech-card {
         flex-direction: column !important;
         text-align: center !important;
         padding: 30px 20px !important;
         gap: 15px !important;
+        width: 100%; box-sizing: border-box;
     }
 
-    .tech-img-secondary {
-        flex-direction: column !important;
-        max-height: none !important;
-    }
-    
-    .tech-img-secondary img {
-        height: 200px !important; 
-    }
+    .tech-img-secondary { flex-direction: column !important; max-height: none !important; }
+    .tech-img-secondary img { height: 200px !important; width: 100%; min-width: 0; }
 
     /* -------------------------------------
        REESTRUCTURACIÓN DE MÓDULOS INTERNOS
        ------------------------------------- */
-    .about-premium-board, .contact-board, .service-premium-board {
-        margin: 2vh 4%; padding: 4vh 5vw; border-radius: 12px;
-        padding-bottom: calc(60px + 4vh) !important; 
-    }
-    
     .about-hero-grid, .about-content-split, .founder-premium-card, 
     .founder-stats-grid, .contact-board, .service-features-grid {
-        grid-template-columns: 1fr; gap: 3vh;
+        grid-template-columns: 1fr !important; gap: 3vh; display: grid;
     }
 
-    .service-title-area h2 {
-        font-size: clamp(1.8rem, 6vw, 2.5rem) !important;
-        line-height: 1.1 !important;
-        word-wrap: break-word !important;
-    }
-
-    .feature-box {
-        padding: 30px 20px !important;
-        text-align: center !important;
-    }
-    
+    .service-title-area h2 { font-size: clamp(1.8rem, 6vw, 2.5rem) !important; line-height: 1.1 !important; word-wrap: break-word !important; }
+    .feature-box { padding: 30px 20px !important; text-align: center !important; }
     .service-header-split { flex-direction: column; align-items: flex-start; gap: 2vh; }
     
     .service-includes-banner { flex-direction: column !important; }
-    
-    .includes-text {
-        padding: 30px 20px !important;
-    }
-    
+    .includes-text { padding: 30px 20px !important; }
     .includes-image { order: -1; min-height: 200px; height: 200px; }
     
     /* Contacto Ajustes */
-    .contact-info-panel { padding: 3vh 0; border-right: none; border-bottom: 1px solid var(--border-dim); }
+    .contact-info-panel { padding: 3vh 0; border-right: none; border-bottom: 1px solid var(--border-dim); background: transparent;}
     .contact-form-panel { padding: 4vh 0 0 0; }
     .visual-feature-radar { min-height: 15vh; margin: 2vh 0; }
     .form-row { flex-direction: column; gap: 20px; }
@@ -767,11 +775,11 @@ input:checked + .slider:before { transform: translateX(20px); background-color: 
        ------------------------------------- */
     .social-sidebar {
         top: auto; bottom: 0; right: 0; left: 0; transform: none; flex-direction: row; width: 100%; 
-        background-color: rgba(10, 8, 6, 0.95); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); 
+        background-color: rgba(10, 8, 6, 0.98); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); 
         border-top: 1px solid var(--border-dim); box-shadow: 0 -5px 20px rgba(0,0,0,0.5); padding: 0; gap: 0; 
-        z-index: var(--z-social);
+        z-index: var(--z-social); position: fixed;
     }
-    [data-theme="light"] .social-sidebar { background-color: rgba(214, 204, 188, 0.95); border-top-color: var(--border-dim); }
+    [data-theme="light"] .social-sidebar { background-color: rgba(214, 204, 188, 0.98); border-top-color: var(--border-dim); }
     
     .social-link { 
         flex: 1; width: auto; height: 60px; border-radius: 0;
@@ -779,7 +787,6 @@ input:checked + .slider:before { transform: translateX(20px); background-color: 
         backdrop-filter: none; -webkit-backdrop-filter: none; 
     }
     .social-link:last-child { border-right: none; }
-    
     .social-flash { display: none; }
 }
 
