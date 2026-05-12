@@ -120,7 +120,6 @@ body {
    ========================================= */
 .view-section { 
     display: none; flex: 1; min-height: 0; width: 100%;
-    /* FIX: Permitimos scroll general en toda vista si la ventana es muy baja */
     overflow-y: auto; overflow-x: hidden; position: relative;
 }
 .active-view { display: flex; flex-direction: column; justify-content: flex-start; }
@@ -188,7 +187,6 @@ input:checked + .slider:before { transform: translateX(20px); background-color: 
 .hero-carousel { 
     position: relative; flex: 1; display: flex; width: 100%; 
     overflow: hidden; background-color: transparent; 
-    /* FIX DEFINITIVO: El Hero nunca se comprime a menos de 650px. Si la pantalla es menor, se hace scroll. */
     min-height: 650px; 
 }
 
@@ -220,7 +218,6 @@ input:checked + .slider:before { transform: translateX(20px); background-color: 
 .slide { 
     position: absolute; inset: 0; display: flex; align-items: center; 
     justify-content: flex-start; z-index: 1; pointer-events: none;
-    /* FIX: Margen para que el texto NUNCA llegue al fondo donde están los botones */
     padding-bottom: 120px; 
 }
 .slide.active { z-index: 2; pointer-events: all; }
@@ -285,7 +282,6 @@ input:checked + .slider:before { transform: translateX(20px); background-color: 
 
 .slider-progress-wrapper { 
     display: flex; align-items: center; gap: 20px; 
-    /* FIX: Max-width absoluto para evitar que atraviese pantallas anchas/angostas */
     width: 100%; max-width: 320px; 
 }
 .slide-counter { font-family: var(--font-head); font-size: 0.85rem; color: var(--text-gray); font-weight: 500; letter-spacing: 1px;}
@@ -385,9 +381,15 @@ input:checked + .slider:before { transform: translateX(20px); background-color: 
    ========================================= */
 .detail-view { 
     padding: 2vh 10% 3vh; background-color: transparent; 
-    overflow-y: hidden; overflow-x: hidden;
+    height: 100%;
+    overflow-y: auto; overflow-x: hidden;
+    /* ELIMINADO EL DISPLAY: FLEX FORZADO */
 }
-.detail-view.active-view { justify-content: flex-start; }
+.detail-view.active-view { 
+    display: flex; 
+    flex-direction: column;
+    justify-content: flex-start; 
+}
 
 .back-btn { 
     align-self: flex-start; flex-shrink: 0; background: none; border: 1px solid var(--border-dim); 
@@ -636,7 +638,7 @@ input:checked + .slider:before { transform: translateX(20px); background-color: 
 }
 
 /* =========================================
-   VERSIÓN MOBILE DEFINITIVA (FIX COLISIÓN)
+   VERSIÓN MOBILE DEFINITIVA (FIX SPA Y COLISIONES)
    ========================================= */
 @media (max-width: 900px) {
     /* Navbar & Hamburger Menu */
@@ -666,78 +668,57 @@ input:checked + .slider:before { transform: translateX(20px); background-color: 
     .nav-links a { font-size: 1.5rem; letter-spacing: 2px; display: block; padding: 10px; }
 
     /* -------------------------------------
-       HERO: ESCUDO ANTI-COLISIÓN DEFINITIVO
+       HERO: FIX ANTI-COLISIÓN
        ------------------------------------- */
-    .carousel-container { 
-        justify-content: center !important; 
-        padding: 0 !important; 
-    }
-    
-    .slide { 
-        justify-content: center !important; 
-        align-items: center !important; 
-        padding-top: 0 !important; 
-        /* Colchón de seguridad gigante. Frena al bloque para que NUNCA pise la barra de progreso */
-        padding-bottom: 160px !important; 
-    }
-    
-    .slide-content { 
-        padding: 0 5%; 
-        max-width: 100%; 
-        margin-left: 0; 
-        text-align: center; /* Centramos el texto en mobile para equilibrio */
-        display: flex; 
-        flex-direction: column; 
-        align-items: center; 
-    }
-    
+    .carousel-container { justify-content: center !important; padding: 0 !important; }
+    .slide { justify-content: center !important; align-items: center !important; padding-top: 0 !important; padding-bottom: 160px !important; }
+    .slide-content { padding: 0 5%; max-width: 100%; margin-left: 0; text-align: center; display: flex; flex-direction: column; align-items: center; }
     .hero-overlay-global { background: linear-gradient(180deg, rgba(3,3,3,0.85) 0%, rgba(3,3,3,0.6) 50%, rgba(3,3,3,0.85) 100%); }
-    
-    .slide-content h1 { 
-        font-size: clamp(2rem, 8vw, 2.8rem); 
-        margin-bottom: 12px; 
-        text-shadow: 0 4px 15px rgba(0, 0, 0, 0.8), 0 10px 30px rgba(0, 0, 0, 0.9); 
-    }
-    
-    .slide-content p { 
-        margin-bottom: 25px; 
-        max-width: 95%; 
-        font-size: 1rem; 
-        color: rgba(255,255,255,0.9); 
-    }
-    
-    .cta-button { 
-        padding: 14px 30px; 
-        font-size: 0.85rem; 
-        width: 100%; 
-        max-width: 280px; 
-        text-align: center; 
-    }
+    .slide-content h1 { font-size: clamp(2rem, 8vw, 2.8rem); margin-bottom: 12px; text-shadow: 0 4px 15px rgba(0, 0, 0, 0.8), 0 10px 30px rgba(0, 0, 0, 0.9); }
+    .slide-content p { margin-bottom: 25px; max-width: 95%; font-size: 1rem; color: rgba(255,255,255,0.9); }
+    .cta-button { padding: 14px 30px; font-size: 0.85rem; width: 100%; max-width: 280px; text-align: center; }
+
+    /* UI CONTROLES */
+    .hero-ui-layer { bottom: 85px !important; left: 5%; right: 5%; flex-direction: row !important; justify-content: space-between !important; align-items: center !important; gap: 15px !important; }
+    .slider-progress-wrapper { flex: 1; max-width: 100%; gap: 10px; }
+    .slider-controls { gap: 8px; }
+    .nav-btn-premium { width: 42px !important; height: 42px !important; }
 
     /* -------------------------------------
-       UI CONTROLES (Flechas y Progreso)
+       VISTAS DETALLADAS (SERVICIOS Y TECH)
        ------------------------------------- */
-    .hero-ui-layer { 
-        bottom: 85px !important; /* Separación garantizada de la barra social inferior */
-        left: 5%; right: 5%; 
-        /* Juntamos progreso y flechas en una sola línea para no comer altura */
-        flex-direction: row !important; 
-        justify-content: space-between !important; 
-        align-items: center !important; 
-        gap: 15px !important; 
+    .detail-view {
+        padding: 100px 5% 120px 5% !important; 
+        /* SE ELIMINÓ EL DISPLAY: FLEX FORZADO AQUÍ */
+        height: 100%;
+        overflow-y: auto;
     }
     
-    .slider-progress-wrapper { 
-        flex: 1; /* Absorbe el espacio disponible */
-        max-width: 100%; 
-        gap: 10px; 
+    .module-header h2 {
+        font-size: clamp(1.4rem, 6vw, 2rem) !important; /* Ligeramente reducido para que palabras largas no se corten */
+        line-height: 1.2;
+        word-wrap: break-word;
+    }
+
+    .tech-layout {
+        flex-direction: column !important;
+        gap: 30px !important;
     }
     
-    .slider-controls { gap: 8px; }
+    .tech-card {
+        flex-direction: column !important;
+        text-align: center !important;
+        padding: 30px 20px !important;
+        gap: 15px !important;
+    }
+
+    .tech-img-secondary {
+        flex-direction: column !important;
+        max-height: none !important;
+    }
     
-    .nav-btn-premium { 
-        width: 42px !important; 
-        height: 42px !important; 
+    .tech-img-secondary img {
+        height: 200px !important; 
     }
 
     /* -------------------------------------
@@ -745,23 +726,41 @@ input:checked + .slider:before { transform: translateX(20px); background-color: 
        ------------------------------------- */
     .about-premium-board, .contact-board, .service-premium-board {
         margin: 2vh 4%; padding: 4vh 5vw; border-radius: 12px;
-        padding-bottom: calc(60px + 4vh); 
+        padding-bottom: calc(60px + 4vh) !important; 
     }
     
     .about-hero-grid, .about-content-split, .founder-premium-card, 
     .founder-stats-grid, .contact-board, .service-features-grid {
         grid-template-columns: 1fr; gap: 3vh;
     }
+
+    .service-title-area h2 {
+        font-size: clamp(1.8rem, 6vw, 2.5rem) !important;
+        line-height: 1.1 !important;
+        word-wrap: break-word !important;
+    }
+
+    .feature-box {
+        padding: 30px 20px !important;
+        text-align: center !important;
+    }
     
+    .service-header-split { flex-direction: column; align-items: flex-start; gap: 2vh; }
+    
+    .service-includes-banner { flex-direction: column !important; }
+    
+    .includes-text {
+        padding: 30px 20px !important;
+    }
+    
+    .includes-image { order: -1; min-height: 200px; height: 200px; }
+    
+    /* Contacto Ajustes */
     .contact-info-panel { padding: 3vh 0; border-right: none; border-bottom: 1px solid var(--border-dim); }
     .contact-form-panel { padding: 4vh 0 0 0; }
     .visual-feature-radar { min-height: 15vh; margin: 2vh 0; }
     .form-row { flex-direction: column; gap: 20px; }
     .submit-btn-premium { width: 100%; text-align: center; }
-
-    .service-header-split { flex-direction: column; align-items: flex-start; gap: 2vh; }
-    .service-includes-banner { flex-direction: column; }
-    .includes-image { order: -1; min-height: 200px; height: 200px; }
 
     /* -------------------------------------
        BARRA SOCIAL HORIZONTAL AL PIE
@@ -785,7 +784,7 @@ input:checked + .slider:before { transform: translateX(20px); background-color: 
 }
 
 @media (max-width: 380px) {
-    .slide-content h1 { font-size: 1.8rem; }
+    .slide-content h1 { font-size: 1.8rem !important; }
     .logo-text { font-size: 1.2rem; }
     .controls-wrapper { gap: 10px; }
     .logo-icon-container { width: 28px; height: 28px; }
