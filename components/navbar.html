@@ -1,0 +1,51 @@
+<nav class="navbar">
+    <a href="#" class="logo" data-action="switch-view" data-target="inicio">
+        <canvas id="webgl-logo"></canvas>
+        <div class="logo-icon-container" style="position: relative; z-index: 1;">
+            <svg class="logo-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="16 18 22 12 16 6"></polyline>
+                <polyline points="8 6 2 12 8 18"></polyline>
+            </svg>
+        </div>
+        <div class="logo-text-wrapper" style="position: relative; z-index: 1;">
+            <span class="logo-text">techno<span class="highlight">mode</span></span>
+            <span class="logo-subtitle" data-i18n="subtitle">Solutions</span>
+        </div>
+    </a>
+
+    <ul class="nav-links" id="nav-links">
+        <li><a href="#" data-action="switch-view" data-target="inicio" class="nav-btn" data-i18n="nav_home">Inicio</a></li>
+        <li><a href="#" data-action="switch-view" data-target="nosotros" class="nav-btn" data-i18n="nav_about">Sobre Nosotros</a></li>
+        
+        <li class="dropdown-item">
+            <a href="#" class="dropbtn" data-action="switch-view" data-target="servicios-hub"><span data-i18n="nav_services">Servicios</span> ▾</a>
+            <div class="dropdown-content">
+                <a href="#" data-action="switch-view" data-target="detalle-ingenieria" data-i18n="srv_eng">Desarrollo Web Custom</a>
+                <a href="#" data-action="switch-view" data-target="detalle-cuadros" data-i18n="srv_panels">Sistemas y Software</a>
+                <a href="#" data-action="switch-view" data-target="detalle-obras" data-i18n="srv_projects">E-Commerce & Dashboards</a>
+                <a href="#" data-action="switch-view" data-target="detalle-mantenimiento" data-i18n="srv_maintenance">UI/UX & Branding</a>
+            </div>
+        </li>
+
+        <li><a href="#" class="btn-contact" data-action="switch-view" data-target="contacto" data-i18n="nav_contact">Contáctanos</a></li>
+    </ul>
+
+    <div class="controls-wrapper">
+        <div class="lang-switch">
+            <button data-action="change-lang" data-lang="es" class="lang-btn active" title="Español">🇪🇸</button>
+            <button data-action="change-lang" data-lang="en" class="lang-btn" title="English">🇬🇧</button>
+        </div>
+
+        <div class="theme-switch-wrapper">
+            <label class="theme-switch" for="checkbox">
+                <input type="checkbox" id="checkbox" />
+                <div class="slider round">
+                    <div class="icon-sun">☀️</div>
+                    <div class="icon-moon">🌙</div>
+                </div>
+            </label>
+        </div>
+    </div>
+
+    <div class="hamburger" id="hamburger"><span class="bar"></span><span class="bar"></span><span class="bar"></span></div>
+</nav>
