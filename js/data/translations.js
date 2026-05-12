@@ -10,18 +10,22 @@ export const translations = {
         srv_maintenance: "UI/UX & Branding",
         nav_contact: "Contáctanos",
         
-        hero1_tag: "Código y Estética",
-        hero1_title: "SOLUCIONES <br> DIGITALES",
-        hero1_desc: "Solutions y desarrollo Frontend de alto impacto.",
-        hero1_btn: "Ver Soluciones",
-        hero2_tag: "Arquitectura Escalable",
-        hero2_title: "SOFTWARE <br> A MEDIDA",
-        hero2_desc: "Sistemas personalizados y bases de datos robustas para tu negocio.",
-        hero2_btn: "Nuestros Sistemas",
-        hero3_tag: "Tecnología Moderna",
-        hero3_title: "DESARROLLO <br> FULL-STACK",
-        hero3_desc: "Aplicaciones en React, Vue.js y ecosistemas .NET.",
-        hero3_btn: "Ver Stack Técnico",
+        // --- HERO CAROUSEL ACTUALIZADO ---
+        hero1_tag: "Presencia Digital Premium",
+        hero1_title: "DESARROLLO <br>WEB A MEDIDA",
+        hero1_desc: "Experiencias inmersivas, ultra rápidas y diseñadas para convertir. Elevamos tu marca al estándar más alto de la industria.",
+        hero1_btn: "Ver Servicios",
+        
+        hero2_tag: "Ventas Sin Límites",
+        hero2_title: "ECOMMERCE <br>HIGH-END",
+        hero2_desc: "Tiendas online escalables, seguras y optimizadas para una experiencia de compra fluida y máxima retención.",
+        hero2_btn: "Explorar Tiendas",
+        
+        hero3_tag: "Ingeniería & Eficiencia",
+        hero3_title: "SOFTWARE & <br>AUTOMATIZACIÓN",
+        hero3_desc: "Sistemas robustos y dashboards interactivos. Transformamos la complejidad de tu negocio en interfaces minimalistas.",
+        hero3_btn: "Nuestros Sistemas",
+        // ---------------------------------
 
         about_tag: "Innovación y Vanguardia",
         about_title: "SOBRE",
@@ -134,18 +138,22 @@ export const translations = {
         srv_maintenance: "UI/UX & Branding",
         nav_contact: "Contact Us",
         
-        hero1_tag: "Code & Aesthetics",
-        hero1_title: "DIGITAL <br> SOLUTIONS",
-        hero1_desc: "Solutions and high-impact Frontend development.",
-        hero1_btn: "See Solutions",
-        hero2_tag: "Scalable Architecture",
-        hero2_title: "CUSTOM <br> SOFTWARE",
-        hero2_desc: "Custom systems and robust databases for your business.",
-        hero2_btn: "Our Systems",
-        hero3_tag: "Modern Technology",
-        hero3_title: "FULL-STACK <br> DEVELOPMENT",
-        hero3_desc: "Applications in React, Vue.js, and .NET ecosystems.",
-        hero3_btn: "See Tech Stack",
+        // --- HERO CAROUSEL ACTUALIZADO (INGLÉS) ---
+        hero1_tag: "Premium Digital Presence",
+        hero1_title: "CUSTOM WEB <br>DEVELOPMENT",
+        hero1_desc: "Immersive, ultra-fast experiences designed to convert. We elevate your brand to the highest industry standard.",
+        hero1_btn: "See Services",
+        
+        hero2_tag: "Limitless Sales",
+        hero2_title: "HIGH-END <br>ECOMMERCE",
+        hero2_desc: "Scalable, secure, and optimized online stores for a seamless shopping experience and maximum retention.",
+        hero2_btn: "Explore Stores",
+        
+        hero3_tag: "Engineering & Efficiency",
+        hero3_title: "SOFTWARE & <br>AUTOMATION",
+        hero3_desc: "Robust systems and interactive dashboards. We transform the complexity of your business into minimalist interfaces.",
+        hero3_btn: "Our Systems",
+        // ------------------------------------------
 
         about_tag: "Innovation & Avant-Garde",
         about_title: "ABOUT",
