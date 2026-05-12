@@ -1,202 +1,160 @@
+import * as THREE from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.module.js';
+
 export const WebGLEngine = (() => {
-    const heroVert = `varying vec2 vUv; void main() { vUv = uv; gl_Position = vec4(position, 1.0); }`;
-    const heroFrag = `
-        uniform sampler2D uTex1;
-        uniform sampler2D uTex2;
-        uniform float uProgress;
-        varying vec2 vUv;
+    let scene, camera, renderer, instancedMesh;
+    let mainLight, fillLight, backLight;
+    
+    let mouse = new THREE.Vector2(0, 0);
+    let targetMouse = new THREE.Vector2(0, 0);
+    let clock = new THREE.Clock();
+    
+    let speedController = { value: 0.05 };
+    const dummy = new THREE.Object3D();
+    const count = 350; 
+    const instanceData = []; 
 
-        void main() {
-            vec2 p1 = vUv + (vUv - 0.5) * (uProgress * 0.03);
-            vec2 p2 = vUv + (vUv - 0.5) * ((1.0 - uProgress) * 0.03);
-            
-            vec4 c1 = texture2D(uTex1, p1);
-            vec4 c2 = texture2D(uTex2, p2);
-            
-            gl_FragColor = mix(c1, c2, uProgress);
-        }
-    `;
+    const palettes = [
+        { main: new THREE.Color("#E58D2E"), fill: new THREE.Color("#1A1107"), fog: 0x070503 },
+        { main: new THREE.Color("#FFFFFF"), fill: new THREE.Color("#111116"), fog: 0x050508 },
+        { main: new THREE.Color("#B36A22"), fill: new THREE.Color("#201005"), fog: 0x080402 } 
+    ];
 
-    let particlesCtx, heroCtx, logoCtx;
-
-    const initParticles = () => {
-        const canvas = document.getElementById('webgl-particles');
-        if(!canvas || typeof THREE === 'undefined') return;
-
-        particlesCtx = { renderer: new THREE.WebGLRenderer({ canvas, alpha: true }) };
-        particlesCtx.renderer.setSize(window.innerWidth, window.innerHeight);
-        
-        particlesCtx.scene = new THREE.Scene();
-        particlesCtx.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
-        particlesCtx.camera.position.z = 200;
-
-        const circleCanvas = document.createElement('canvas');
-        circleCanvas.width = 32; circleCanvas.height = 32;
-        const ctx = circleCanvas.getContext('2d');
-        const gradient = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
-        gradient.addColorStop(0, 'rgba(255,255,255,1)');
-        gradient.addColorStop(1, 'rgba(255,255,255,0)');
-        ctx.fillStyle = gradient; ctx.fillRect(0,0,32,32);
-        const texture = new THREE.CanvasTexture(circleCanvas);
-
-        const count = window.innerWidth > 900 ? 100 : 30; 
-        const geometry = new THREE.BufferGeometry();
-        const positions = [];
-        const colors = [];
-        
-        const palette = [new THREE.Color(0xE58D2E), new THREE.Color(0xF2A65A), new THREE.Color(0x3B2D26), new THREE.Color(0x1F2232)];
-
-        for(let i=0; i<count; i++) {
-            positions.push((Math.random() - 0.5) * 800);
-            positions.push((Math.random() - 0.5) * 800);
-            positions.push((Math.random() - 0.5) * 400);
-            const col = palette[Math.floor(Math.random() * palette.length)];
-            colors.push(col.r, col.g, col.b);
-        }
-
-        geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-        geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-
-        particlesCtx.material = new THREE.PointsMaterial({
-            size: 2.5, vertexColors: true, map: texture, transparent: true, opacity: 0.15, depthWrite: false, blending: THREE.AdditiveBlending
-        });
-
-        particlesCtx.mesh = new THREE.Points(geometry, particlesCtx.material);
-        particlesCtx.scene.add(particlesCtx.mesh);
-        
-        particlesCtx.mouseX = 0; particlesCtx.mouseY = 0;
-        window.addEventListener('mousemove', (e) => {
-            particlesCtx.mouseX = (e.clientX - window.innerWidth/2) * 0.01; 
-            particlesCtx.mouseY = (e.clientY - window.innerHeight/2) * 0.01;
-        });
-    };
-
-    const initHero = () => {
+    const init = () => {
         const canvas = document.getElementById('webgl-hero');
-        const imgs = document.querySelectorAll('.slide img');
-        if(!canvas || imgs.length === 0 || typeof THREE === 'undefined') return;
+        if (!canvas) return;
 
-        heroCtx = { renderer: new THREE.WebGLRenderer({ canvas, alpha: true }) };
-        heroCtx.renderer.setSize(window.innerWidth, window.innerHeight);
+        scene = new THREE.Scene();
+        // CORRECCIÓN: Fondo sólido idéntico a la niebla para dar profundidad infinita
+        scene.background = new THREE.Color(palettes[0].fog);
+        scene.fog = new THREE.FogExp2(palettes[0].fog, 0.015);
 
-        heroCtx.scene = new THREE.Scene();
-        heroCtx.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-        
-        const loader = new THREE.TextureLoader();
-        loader.setCrossOrigin('anonymous');
-        heroCtx.textures = Array.from(imgs).map(img => loader.load(img.src));
+        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 200);
+        camera.position.set(0, 0, 10);
 
-        heroCtx.material = new THREE.ShaderMaterial({
-            uniforms: {
-                uTex1: { value: heroCtx.textures[0] },
-                uTex2: { value: heroCtx.textures[1] },
-                uProgress: { value: 0 }
-            },
-            vertexShader: heroVert, fragmentShader: heroFrag
+        // Sin alpha:true para máxima performance y profundidad
+        renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: "high-performance" });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.1); 
+        scene.add(ambientLight);
+
+        mainLight = new THREE.PointLight(palettes[0].main, 2, 100);
+        mainLight.position.set(5, 5, -20);
+        scene.add(mainLight);
+
+        fillLight = new THREE.PointLight(palettes[0].fill, 3, 100);
+        fillLight.position.set(-10, -5, -40);
+        scene.add(fillLight);
+
+        backLight = new THREE.PointLight(palettes[0].main, 5, 150);
+        backLight.position.set(0, 10, -80);
+        scene.add(backLight);
+
+        const geometry = new THREE.BoxGeometry(1, 1, 1);
+        const material = new THREE.MeshPhysicalMaterial({
+            color: 0x050505,       
+            metalness: 0.6,        
+            roughness: 0.3,        
+            clearcoat: 0.1,        
+            reflectivity: 0.8
         });
 
-        heroCtx.mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), heroCtx.material);
-        heroCtx.scene.add(heroCtx.mesh);
-    };
+        instancedMesh = new THREE.InstancedMesh(geometry, material, count);
+        scene.add(instancedMesh);
 
-    const initLogo = () => {
-        const canvas = document.getElementById('webgl-logo');
-        if(!canvas || typeof THREE === 'undefined') return;
+        for (let i = 0; i < count; i++) {
+            let x = (Math.random() - 0.5) * 60; 
+            let y = (Math.random() - 0.5) * 40; 
+            let z = (Math.random() - 1.0) * 120; 
 
-        logoCtx = { renderer: new THREE.WebGLRenderer({ canvas, alpha: true }) };
-        logoCtx.renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+            if (Math.abs(x) < 6) x += (x < 0 ? -6 : 6);
+            if (Math.abs(y) < 4) y += (y < 0 ? -4 : 4);
 
-        logoCtx.scene = new THREE.Scene();
-        logoCtx.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+            const scaleX = Math.random() * 2 + 0.5;
+            const scaleY = Math.random() * 2 + 0.5;
+            const scaleZ = Math.random() * 20 + 5; 
 
-        logoCtx.material = new THREE.ShaderMaterial({
-            transparent: true,
-            blending: THREE.AdditiveBlending,
-            uniforms: { uTime: { value: 0 } },
-            vertexShader: heroVert,
-            fragmentShader: `
-                uniform float uTime;
-                varying vec2 vUv;
-                void main() {
-                    float sweep = sin(vUv.x * 2.0 - uTime * 1.5) * 0.5 + 0.5;
-                    float glow = exp(-pow(vUv.y - 0.5, 2.0) * 20.0) * exp(-pow(vUv.x - 0.5, 2.0) * 5.0);
-                    vec3 color = vec3(0.9, 0.55, 0.18) * sweep * glow * 0.3; 
-                    gl_FragColor = vec4(color, color.r);
-                }
-            `
+            dummy.position.set(x, y, z);
+            dummy.scale.set(scaleX, scaleY, scaleZ);
+            dummy.updateMatrix();
+            instancedMesh.setMatrixAt(i, dummy.matrix);
+
+            instanceData.push({ x, y, z, scaleX, scaleY, scaleZ });
+        }
+        instancedMesh.instanceMatrix.needsUpdate = true;
+
+        window.addEventListener('resize', resize);
+        document.addEventListener('mousemove', (e) => {
+            targetMouse.x = (e.clientX / window.innerWidth - 0.5) * 3;
+            targetMouse.y = -(e.clientY / window.innerHeight - 0.5) * 3;
         });
 
-        logoCtx.mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), logoCtx.material);
-        logoCtx.scene.add(logoCtx.mesh);
+        animate();
     };
 
-    const playHeroTransition = (oldIdx, newIdx) => {
-        if(!heroCtx) return;
-        heroCtx.material.uniforms.uTex1.value = heroCtx.textures[oldIdx];
-        heroCtx.material.uniforms.uTex2.value = heroCtx.textures[newIdx];
-        heroCtx.material.uniforms.uProgress.value = 0;
+    const changeScene = (slideIndex) => {
+        if(!mainLight) return;
+        const target = palettes[slideIndex % palettes.length];
         
-        let start = null;
-        const animateT = (time) => {
-            if(!start) start = time;
-            let p = (time - start) / 500; 
-            if(p >= 1) {
-                heroCtx.material.uniforms.uProgress.value = 1;
-                return;
-            }
-            heroCtx.material.uniforms.uProgress.value = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
-            requestAnimationFrame(animateT);
-        };
-        requestAnimationFrame(animateT);
-    };
-
-    const renderLoop = (time) => {
-        requestAnimationFrame(renderLoop);
+        gsap.to(mainLight.color, { r: target.main.r, g: target.main.g, b: target.main.b, duration: 1.5, ease: "power2.inOut" });
+        gsap.to(backLight.color, { r: target.main.r, g: target.main.g, b: target.main.b, duration: 1.5, ease: "power2.inOut" });
+        gsap.to(fillLight.color, { r: target.fill.r, g: target.fill.g, b: target.fill.b, duration: 1.5, ease: "power2.inOut" });
         
-        if(particlesCtx) {
-            const pos = particlesCtx.mesh.geometry.attributes.position.array;
-            for(let i=1; i<pos.length; i+=3) {
-                pos[i] += Math.sin(time*0.001 + pos[i-1]) * 0.05 + 0.05;
-                if(pos[i] > 400) pos[i] = -400; 
-            }
-            particlesCtx.mesh.geometry.attributes.position.needsUpdate = true;
-            
-            particlesCtx.camera.position.x += (particlesCtx.mouseX - particlesCtx.camera.position.x) * 0.05;
-            particlesCtx.camera.position.y += (-particlesCtx.mouseY - particlesCtx.camera.position.y) * 0.05;
-            particlesCtx.camera.lookAt(particlesCtx.scene.position);
-            
-            particlesCtx.renderer.render(particlesCtx.scene, particlesCtx.camera);
-        }
+        // Animamos tanto la niebla como el fondo para coherencia absoluta
+        gsap.to(scene.fog.color, { r: new THREE.Color(target.fog).r, g: new THREE.Color(target.fog).g, b: new THREE.Color(target.fog).b, duration: 1.5, ease: "power2.inOut" });
+        gsap.to(scene.background, { r: new THREE.Color(target.fog).r, g: new THREE.Color(target.fog).g, b: new THREE.Color(target.fog).b, duration: 1.5, ease: "power2.inOut" });
 
-        if(heroCtx && document.getElementById('inicio').style.display !== 'none') {
-            heroCtx.renderer.render(heroCtx.scene, heroCtx.camera);
-        }
-
-        if(logoCtx) {
-            logoCtx.material.uniforms.uTime.value = time * 0.001;
-            logoCtx.renderer.render(logoCtx.scene, logoCtx.camera);
-        }
+        gsap.to(speedController, {
+            value: 0.8, 
+            duration: 0.8,
+            ease: "power2.in",
+            yoyo: true,
+            repeat: 1
+        });
     };
 
     const resize = () => {
-        if(particlesCtx) {
-            particlesCtx.camera.aspect = window.innerWidth / window.innerHeight;
-            particlesCtx.camera.updateProjectionMatrix();
-            particlesCtx.renderer.setSize(window.innerWidth, window.innerHeight);
-        }
-        if(heroCtx) heroCtx.renderer.setSize(window.innerWidth, window.innerHeight);
-        if(logoCtx) {
-            const c = document.getElementById('webgl-logo');
-            logoCtx.renderer.setSize(c.clientWidth, c.clientHeight);
-        }
+        if(!renderer) return;
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
     };
 
-    return {
-        init: () => {
-            initParticles(); initHero(); initLogo();
-            window.addEventListener('resize', resize);
-            requestAnimationFrame(renderLoop);
-        },
-        playHeroTransition
+    const animate = () => {
+        requestAnimationFrame(animate);
+        const time = clock.getElapsedTime();
+
+        for (let i = 0; i < count; i++) {
+            const data = instanceData[i];
+            
+            data.z += speedController.value;
+
+            if (data.z > 15) {
+                data.z -= 135;
+            }
+
+            const floatY = data.y + Math.sin(time * 0.5 + i) * 0.5;
+
+            dummy.position.set(data.x, floatY, data.z);
+            dummy.scale.set(data.scaleX, data.scaleY, data.scaleZ);
+            dummy.updateMatrix();
+            instancedMesh.setMatrixAt(i, dummy.matrix);
+        }
+        instancedMesh.instanceMatrix.needsUpdate = true;
+
+        mouse.x += (targetMouse.x - mouse.x) * 0.05;
+        mouse.y += (targetMouse.y - mouse.y) * 0.05;
+        
+        camera.position.x = mouse.x;
+        camera.position.y = mouse.y + 2; 
+        camera.lookAt(mouse.x * 0.5, mouse.y * 0.5, -50);
+
+        mainLight.position.x = Math.sin(time * 0.5) * 10;
+        fillLight.position.y = Math.cos(time * 0.3) * 10 - 5;
+
+        renderer.render(scene, camera);
     };
+
+    return { init, changeScene };
 })();
