@@ -2,40 +2,78 @@
     <header class="hero-carousel">
         <canvas id="webgl-hero"></canvas>
         
+        <div class="hero-overlay-global"></div>
+
         <div class="carousel-container">
             <div class="slide active">
-                <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1920&q=80" alt="Estética Sunset Blur" style="display:none;">
-                <div class="overlay"></div>
                 <div class="slide-content">
-                    <span class="tagline" data-i18n="hero1_tag">Código y Estética</span>
-                    <h1 data-i18n="hero1_title">SOLUCIONES <br> DIGITALES</h1>
-                    <p data-i18n="hero1_desc">Solutions y desarrollo Frontend de alto impacto.</p>
-                    <button data-action="switch-view" data-target="servicios-hub" class="cta-button" data-i18n="hero1_btn">Ver Soluciones</button>
+                    <div class="gs-hero-stagger">
+                        <span class="tagline" data-i18n="hero1_tag">Presencia Digital Premium</span>
+                    </div>
+                    <div class="gs-hero-stagger">
+                        <h1 data-i18n="hero1_title">DESARROLLO <br>WEB A MEDIDA</h1>
+                    </div>
+                    <div class="gs-hero-stagger">
+                        <p data-i18n="hero1_desc">Experiencias inmersivas, ultra rápidas y diseñadas para convertir. Elevamos tu marca al estándar más alto de la industria.</p>
+                    </div>
+                    <div class="gs-hero-stagger">
+                        <button data-action="switch-view" data-target="servicios-hub" class="cta-button" data-i18n="hero1_btn">Ver Servicios</button>
+                    </div>
                 </div>
             </div>
+
             <div class="slide">
-                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1920&q=80" alt="Sistemas de Gestión" style="display:none;">
-                <div class="overlay"></div>
                 <div class="slide-content">
-                    <span class="tagline" data-i18n="hero2_tag">Arquitectura Escalable</span>
-                    <h1 data-i18n="hero2_title">SOFTWARE <br> A MEDIDA</h1>
-                    <p data-i18n="hero2_desc">Sistemas personalizados y bases de datos robustas para tu negocio.</p>
-                    <button data-action="switch-view" data-target="detalle-cuadros" class="cta-button" data-i18n="hero2_btn">Nuestros Sistemas</button>
+                    <div class="gs-hero-stagger">
+                        <span class="tagline" data-i18n="hero2_tag">Ventas Sin Límites</span>
+                    </div>
+                    <div class="gs-hero-stagger">
+                        <h1 data-i18n="hero2_title">ECOMMERCE <br>HIGH-END</h1>
+                    </div>
+                    <div class="gs-hero-stagger">
+                        <p data-i18n="hero2_desc">Tiendas online escalables, seguras y optimizadas para una experiencia de compra fluida y máxima retención.</p>
+                    </div>
+                    <div class="gs-hero-stagger">
+                        <button data-action="switch-view" data-target="detalle-obras" class="cta-button" data-i18n="hero2_btn">Explorar Tiendas</button>
+                    </div>
                 </div>
             </div>
+
             <div class="slide">
-                <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1920&q=80" alt="Código" style="display:none;">
-                <div class="overlay"></div>
                 <div class="slide-content">
-                    <span class="tagline" data-i18n="hero3_tag">Tecnología Moderna</span>
-                    <h1 data-i18n="hero3_title">DESARROLLO <br> FULL-STACK</h1>
-                    <p data-i18n="hero3_desc">Aplicaciones en React, Vue.js y ecosistemas .NET.</p>
-                    <button data-action="switch-view" data-target="detalle-ingenieria" class="cta-button" data-i18n="hero3_btn">Ver Stack Técnico</button>
+                    <div class="gs-hero-stagger">
+                        <span class="tagline" data-i18n="hero3_tag">Ingeniería & Eficiencia</span>
+                    </div>
+                    <div class="gs-hero-stagger">
+                        <h1 data-i18n="hero3_title">SOFTWARE & <br>AUTOMATIZACIÓN</h1>
+                    </div>
+                    <div class="gs-hero-stagger">
+                        <p data-i18n="hero3_desc">Sistemas robustos y dashboards interactivos. Transformamos la complejidad de tu negocio en interfaces minimalistas.</p>
+                    </div>
+                    <div class="gs-hero-stagger">
+                        <button data-action="switch-view" data-target="detalle-cuadros" class="cta-button" data-i18n="hero3_btn">Nuestros Sistemas</button>
+                    </div>
                 </div>
             </div>
-            
-            <button class="prev-btn" data-action="move-slide" data-dir="-1">❮</button>
-            <button class="next-btn" data-action="move-slide" data-dir="1">❯</button>
+
+            <div class="hero-ui-layer">
+                <div class="slider-progress-wrapper">
+                    <span class="slide-counter current" id="slider-current-count">01</span>
+                    <div class="progress-bar-track">
+                        <div class="progress-bar-fill" id="slider-progress-fill"></div>
+                    </div>
+                    <span class="slide-counter total" id="slider-total-count">03</span>
+                </div>
+
+                <div class="slider-controls">
+                    <button class="nav-btn-premium prev" data-action="move-slide" data-dir="-1" aria-label="Anterior">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 19l-7-7 7-7"/></svg>
+                    </button>
+                    <button class="nav-btn-premium next" data-action="move-slide" data-dir="1" aria-label="Siguiente">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5l7 7-7 7"/></svg>
+                    </button>
+                </div>
+            </div>
         </div>
     </header>
 </div>
