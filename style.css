@@ -211,16 +211,17 @@ body {
 .logo-text-wrapper { 
     display: flex; 
     flex-direction: column; 
-    line-height: 1; 
+    justify-content: center;
 }
 
 .logo-text { 
     font-family: var(--font-head); 
-    font-size: 1.9rem;
+    font-size: 1.7rem; /* Apenas más chico para hacerle lugar al subtítulo */
     font-weight: 800;
     letter-spacing: -0.5px;
     color: var(--text-main); 
     transition: color 0.4s; 
+    line-height: 1;
 }
 
 .logo-text .highlight { 
@@ -228,7 +229,17 @@ body {
     font-weight: 800; 
 }
 
-.logo-subtitle { display: none; }
+.logo-subtitle { 
+    display: block; 
+    font-family: var(--font-body);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 4.5px;
+    color: var(--text-gray);
+    font-weight: 500;
+    margin-top: 2px;
+    margin-left: 2px;
+}
 
 .nav-links { list-style: none; display: flex; gap: 35px; align-items: center; margin-left: auto; }
 .nav-links a { text-decoration: none; color: var(--text-main); font-weight: 400; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.3s ease; opacity: 0.85; }
@@ -737,7 +748,8 @@ input:checked + .slider:before { transform: translateX(20px); background-color: 
     
     .logo { gap: 5px; flex: 1; min-width: 0; }
     .logo-icon-container { width: 26px; height: 26px; flex-shrink: 0; }
-    .logo-text { font-size: 1.35rem; letter-spacing: -0.5px; }
+    .logo-text { font-size: 1.3rem; letter-spacing: -0.5px; line-height: 1; }
+    .logo-subtitle { font-size: 0.5rem; letter-spacing: 3px; margin-top: 1px; }
 
     .controls-wrapper { 
         margin-left: auto; margin-right: 0; gap: 12px; 
