@@ -1,15 +1,21 @@
 <nav class="navbar">
     <a href="#" class="logo" data-action="switch-view" data-target="inicio">
         <canvas id="webgl-logo"></canvas>
+        
         <div class="logo-icon-container" style="position: relative; z-index: 1;">
-            <svg class="logo-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="16 18 22 12 16 6"></polyline>
-                <polyline points="8 6 2 12 8 18"></polyline>
+            <svg class="logo-svg" viewBox="0 0 24 24" fill="none" stroke="url(#knot-gradient)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <defs>
+                    <linearGradient id="knot-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#FF9000" />
+                        <stop offset="100%" stop-color="#221100" />
+                    </linearGradient>
+                </defs>
+                <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path>
             </svg>
         </div>
-        <div class="logo-text-wrapper" style="position: relative; z-index: 1;">
-            <span class="logo-text">dwa<span class="highlight">m</span></span>
-            <span class="logo-subtitle" data-i18n="subtitle">Diseño Web A Medida</span>
+
+        <div class="logo-text-wrapper" style="position: relative; z-index: 1; margin-left: 4px;">
+            <span class="logo-text">techno<span class="highlight">mode</span></span>
         </div>
     </a>
 
