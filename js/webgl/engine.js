@@ -1,5 +1,8 @@
 import * as THREE from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.module.js';
 
+// ==========================================
+// ENGINE PRINCIPAL (HERO)
+// ==========================================
 export const WebGLEngine = (() => {
     let scene, camera, renderer, instancedMesh;
     let mainLight, fillLight, backLight;
@@ -24,14 +27,12 @@ export const WebGLEngine = (() => {
         if (!canvas) return;
 
         scene = new THREE.Scene();
-        // CORRECCIÓN: Fondo sólido idéntico a la niebla para dar profundidad infinita
         scene.background = new THREE.Color(palettes[0].fog);
         scene.fog = new THREE.FogExp2(palettes[0].fog, 0.015);
 
         camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 200);
         camera.position.set(0, 0, 10);
 
-        // Sin alpha:true para máxima performance y profundidad
         renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: "high-performance" });
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -101,7 +102,6 @@ export const WebGLEngine = (() => {
         gsap.to(backLight.color, { r: target.main.r, g: target.main.g, b: target.main.b, duration: 1.5, ease: "power2.inOut" });
         gsap.to(fillLight.color, { r: target.fill.r, g: target.fill.g, b: target.fill.b, duration: 1.5, ease: "power2.inOut" });
         
-        // Animamos tanto la niebla como el fondo para coherencia absoluta
         gsap.to(scene.fog.color, { r: new THREE.Color(target.fog).r, g: new THREE.Color(target.fog).g, b: new THREE.Color(target.fog).b, duration: 1.5, ease: "power2.inOut" });
         gsap.to(scene.background, { r: new THREE.Color(target.fog).r, g: new THREE.Color(target.fog).g, b: new THREE.Color(target.fog).b, duration: 1.5, ease: "power2.inOut" });
 
@@ -157,4 +157,82 @@ export const WebGLEngine = (() => {
     };
 
     return { init, changeScene };
+})();
+
+// ==========================================
+// ENGINE INDEPENDIENTE PARA EL LOADER
+// ==========================================
+export const LoaderEngine = (() => {
+    let scene, camera, renderer, particles;
+    let animationId;
+
+    const init = () => {
+        const canvas = document.getElementById('loader-canvas');
+        if (!canvas) return;
+
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+        camera.position.z = 20;
+
+        renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: "low-power" });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        const geometry = new THREE.BufferGeometry();
+        const count = 600; 
+        const positions = new Float32Array(count * 3);
+
+        for(let i = 0; i < count * 3; i++) {
+            positions[i] = (Math.random() - 0.5) * 60;
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        
+        const material = new THREE.PointsMaterial({
+            size: 0.15,
+            color: 0xFF9000, 
+            transparent: true,
+            opacity: 0.6,
+            sizeAttenuation: true
+        });
+
+        particles = new THREE.Points(geometry, material);
+        scene.add(particles);
+
+        window.addEventListener('resize', resize);
+        animate();
+    };
+
+    const resize = () => {
+        if(!renderer) return;
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    };
+
+    const animate = () => {
+        animationId = requestAnimationFrame(animate);
+        
+        particles.rotation.y += 0.0015;
+        particles.rotation.x += 0.0005;
+        
+        renderer.render(scene, camera);
+    };
+
+    const destroy = () => {
+        cancelAnimationFrame(animationId);
+        window.removeEventListener('resize', resize);
+        
+        if (particles) {
+            particles.geometry.dispose();
+            particles.material.dispose();
+            scene.remove(particles);
+        }
+        
+        if (renderer) {
+            renderer.dispose();
+        }
+    };
+
+    return { init, destroy };
 })();
