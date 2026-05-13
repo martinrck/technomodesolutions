@@ -1,11 +1,15 @@
 import { translations } from './data/translations.js';
-import { WebGLEngine } from './webgl/engine.js';
+// ACTUALIZADO: Importamos también el LoaderEngine
+import { WebGLEngine, LoaderEngine } from './webgl/engine.js';
 import { switchView } from './core/router.js';
 import { moveSlide, initSlider } from './core/slider.js';
 import { initUI, changeLanguage } from './core/ui.js';
 
 export const initApp = () => {
-    // 1. Iniciar Motor 3D
+    // 0. Iniciar Motor 3D del Loader (Se ejecuta al instante)
+    LoaderEngine.init();
+
+    // 1. Iniciar Motor 3D Principal (Hero)
     WebGLEngine.init(); 
 
     // 2. Registrar Árbol DOM Local
@@ -46,9 +50,31 @@ export const initApp = () => {
         DOM.hamburger.addEventListener('click', () => DOM.navLinks.classList.toggle('active'));
     }
 
-    // 5. Destrucción del Loader y Revelación de SPA (Se ejecuta inmediatamente porque el componente Loader ya hizo fetch de la inyección)
+    // 5. Animación de Carga, Destrucción del Loader y Revelación de SPA
     const loader = document.getElementById('loader-wrapper');
-    if (loader) {
+    const progressBar = document.getElementById('loader-progress-fill');
+
+    if (loader && progressBar) {
+        // 5.1 Animar la barra de carga (acá dura 2.5s simulando carga pesada)
+        gsap.to(progressBar, {
+            width: "100%",
+            duration: 2.5,
+            ease: "power2.inOut",
+            onComplete: () => {
+                // 5.2 Cuando la barra llega a 100%, desvanecemos el loader completo
+                gsap.to(loader, { 
+                    opacity: 0, 
+                    duration: 0.8, 
+                    onComplete: () => {
+                        loader.style.display = 'none';
+                        // 5.3 CRÍTICO: Matamos el motor 3D del loader para liberar VRAM en celulares
+                        LoaderEngine.destroy();
+                    } 
+                });
+            }
+        });
+    } else if (loader) {
+        // Fallback por si la barra de progreso no existe en el DOM
         gsap.to(loader, { opacity: 0, duration: 0.5, delay: 0.8, onComplete: () => loader.style.display = 'none' });
     }
 };
