@@ -243,8 +243,44 @@ input:checked + .slider:before { transform: translateX(20px); background-color: 
 .slide-content h1 strong { font-weight: 600; color: #FFFFFF; }
 [data-theme="light"] .slide-content h1 { color: #111111; -webkit-text-stroke: 1px rgba(0, 0, 0, 0.05); text-shadow: 0 4px 15px rgba(255, 255, 255, 0.9), 0 10px 30px rgba(255, 255, 255, 0.8); }
 
-.slide-content p { font-family: var(--font-body); font-size: clamp(1rem, 2vh, 1.2rem); line-height: 1.6; margin-bottom: clamp(20px, 4vh, 40px); color: rgba(255, 255, 255, 0.85); font-weight: 300; max-width: 80%; letter-spacing: 0.2px; text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9); }
-[data-theme="light"] .slide-content p { color: rgba(17, 17, 17, 0.85); text-shadow: 0 2px 10px rgba(255, 255, 255, 0.9); }
+/* ===== TEXTO DEL HERO - MEJORADO PARA LEGIBILIDAD EN MODO OSCURO ===== */
+.slide-content p {
+    font-family: var(--font-body);
+    font-size: clamp(1rem, 2vh, 1.2rem);
+    line-height: 1.6;
+    margin-bottom: clamp(20px, 4vh, 40px);
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 400;
+    max-width: 80%;
+    letter-spacing: 0.2px;
+
+    /* Fondo oscuro con blur (efecto glassmorphism) */
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 12px;
+
+    /* Borde lateral de acento para contraste */
+    border-left: 4px solid var(--accent);
+
+    /* Sombra exterior e interior para profundidad */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+
+    /* Espaciado interno */
+    padding: 12px 24px;
+}
+
+/* Versión para tema claro (se mantiene elegante pero legible) */
+[data-theme="light"] .slide-content p {
+    color: rgba(17, 17, 17, 0.95);
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border-left-color: var(--accent);
+    text-shadow: 0 1px 3px rgba(255, 255, 255, 0.8);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+/* ===== FIN MEJORA TEXTO HERO ===== */
 
 .tagline { color: var(--accent); font-weight: 500; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 5px; display: inline-block; margin-bottom: 10px; text-shadow: 0 0 20px rgba(229, 141, 46, 0.4); }
 
@@ -543,11 +579,10 @@ input:checked + .slider:before { transform: translateX(20px); background-color: 
 
 /* Hover sutil para cada red social - conservan su color original */
 .social-link.whatsapp:hover {
-    background: rgba(37, 211, 102, 0.25); /* Fondo un poco más intenso, pero sin perder tono */
+    background: rgba(37, 211, 102, 0.25);
     border-color: rgba(37, 211, 102, 0.8);
     box-shadow: -5px 5px 20px rgba(37, 211, 102, 0.4);
-    transform: scale(1.05);            /* Agrandamiento sutil */
-    /* No se cambia color del SVG, se mantiene el verde original */
+    transform: scale(1.05);
 }
 
 .social-link.linkedin:hover {
@@ -756,7 +791,17 @@ input:checked + .slider:before { transform: translateX(20px); background-color: 
     .slide-content { padding: 0 6%; max-width: 100%; margin-left: 0; text-align: center; display: flex; flex-direction: column; align-items: center; transform: translateY(-10%); }
     .tagline { margin-bottom: 8px; font-size: 0.7rem; }
     .slide-content h1 { font-size: clamp(2.2rem, 9vw, 3rem); line-height: 1.05; margin-bottom: 12px; }
-    .slide-content p { margin-bottom: 25px; font-size: 0.95rem; max-width: 90%; }
+    
+    /* Ajuste responsive del texto hero */
+    .slide-content p {
+        padding: 10px 18px;
+        backdrop-filter: blur(8px);
+        max-width: 95%;
+        font-size: 0.9rem;
+        margin-left: 0;
+        margin-right: 0;
+    }
+    
     .cta-button { padding: 14px 30px; font-size: 0.85rem; width: 100%; max-width: 260px; }
     
     .cta-button:hover, .cta-button:active { transform: none !important; background: rgba(229, 141, 46, 0.1) !important; color: #FFFFFF !important; border-color: rgba(229, 141, 46, 0.5) !important; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important; }
