@@ -59,7 +59,8 @@ export const initUI = (DOM, translations) => {
                 });
             }
             if (icon) {
-                gsap.to(icon, { scale: 1.35, color: "#E58D2E", duration: 0.4, ease: "back.out(1.5)" });
+                // Solo escalamos, NO cambiamos el color (se mantiene el original)
+                gsap.to(icon, { scale: 1.35, duration: 0.4, ease: "back.out(1.5)" });
             }
         });
 
