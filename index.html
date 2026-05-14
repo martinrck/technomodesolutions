@@ -4,13 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Technomode Solutions - Desarrollo y Diseño de Paginas Web</title>
-    <link rel="stylesheet" href="style.css?v=20260514">
+    
+    <!-- CABECERAS ANTI-CACHÉ -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <!-- CSS versionado dinámicamente con APP_VERSION -->
+    <link rel="stylesheet" href="style.css?v=2.0.0">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <!-- SCRIPT DE CONTROL DE VERSIÓN (fuerza reload si cambió la versión) -->
+    <script>
+        (function() {
+            // CAMBIAR ESTE NÚMERO CADA VEZ QUE SE DESPLIEGUE UNA ACTUALIZACIÓN
+            const APP_VERSION = '2.0.0';
+            const storedVersion = localStorage.getItem('app_version');
+            
+            if (storedVersion !== APP_VERSION) {
+                localStorage.setItem('app_version', APP_VERSION);
+                // Fuerza recarga completa desde el servidor (sin caché)
+                window.location.reload(true);
+                return;
+            }
+            
+            // Exponer la versión globalmente para que main.js también la use
+            window.APP_VERSION = APP_VERSION;
+        })();
+    </script>
 </head>
 <body>
 
