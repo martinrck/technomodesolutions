@@ -1,32 +1,22 @@
 <div id="loader-wrapper">
-    <!-- Canvas dedicado para animaciones WebGL/Three.js de fondo durante la carga -->
     <canvas id="loader-canvas"></canvas>
     
     <div class="loader-content">
         <div class="tech-loader">
-            <!-- Anillos orbitales con estética más sutil -->
             <div class="ring-outer"></div>
             <div class="ring-inner"></div>
             
-            <!-- NUEVO LOGO SVG -->
-            <div class="logo-icon-container loader-icon">
-                <svg class="logo-svg" viewBox="0 0 24 24" fill="none" stroke="url(#loader-knot-gradient)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                    <defs>
-                        <linearGradient id="loader-knot-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#FF9000" />
-                            <stop offset="100%" stop-color="#221100" />
-                        </linearGradient>
-                    </defs>
-                    <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path>
-                </svg>
-            </div>
+            <!-- Icono SVG en lugar de la imagen para la pantalla de carga -->
+            <svg class="loader-icon" viewBox="0 0 24 24" fill="none" stroke="#FF9000" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path>
+            </svg>
         </div>
         
+        <!-- Texto del loader con 'techno' en blanco y 'mode' en naranja -->
         <div class="loader-text gs-loader-reveal">
             <span class="main">techno<span class="highlight">mode</span></span>
         </div>
 
-        <!-- Barra de progreso minimalista para animar con GSAP -->
         <div class="loader-progress-container">
             <div class="loader-progress-bar" id="loader-progress-fill"></div>
         </div>
