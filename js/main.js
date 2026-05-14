@@ -1,12 +1,25 @@
-import { translations } from './data/translations.js';
-// ACTUALIZADO: Importamos también el LoaderEngine
-import { WebGLEngine, LoaderEngine } from './webgl/engine.js';
-import { switchView } from './core/router.js';
-import { moveSlide, initSlider } from './core/slider.js';
-import { initUI, changeLanguage } from './core/ui.js';
+// main.js - con imports dinámicos versionados anti-caché
 
-export const initApp = () => {
-    // 0. Iniciar Motor 3D del Loader (Se ejecuta al instante)
+export const initApp = async () => {
+    // Obtener timestamp único (se genera en cada carga)
+    const version = window.APP_VERSION || Date.now();
+
+    // Importar todos los módulos de forma dinámica con el sufijo ?v=version
+    const [
+        { translations },
+        { WebGLEngine, LoaderEngine },
+        { switchView },
+        { moveSlide, initSlider },
+        { initUI, changeLanguage }
+    ] = await Promise.all([
+        import(`./data/translations.js?v=${version}`),
+        import(`./webgl/engine.js?v=${version}`),
+        import(`./core/router.js?v=${version}`),
+        import(`./core/slider.js?v=${version}`),
+        import(`./core/ui.js?v=${version}`)
+    ]);
+
+    // 0. Iniciar Motor 3D del Loader
     LoaderEngine.init();
 
     // 1. Iniciar Motor 3D Principal (Hero)
@@ -55,26 +68,22 @@ export const initApp = () => {
     const progressBar = document.getElementById('loader-progress-fill');
 
     if (loader && progressBar) {
-        // 5.1 Animar la barra de carga (acá dura 2.5s simulando carga pesada)
         gsap.to(progressBar, {
             width: "100%",
             duration: 2.5,
             ease: "power2.inOut",
             onComplete: () => {
-                // 5.2 Cuando la barra llega a 100%, desvanecemos el loader completo
                 gsap.to(loader, { 
                     opacity: 0, 
                     duration: 0.8, 
                     onComplete: () => {
                         loader.style.display = 'none';
-                        // 5.3 CRÍTICO: Matamos el motor 3D del loader para liberar VRAM en celulares
                         LoaderEngine.destroy();
                     } 
                 });
             }
         });
     } else if (loader) {
-        // Fallback por si la barra de progreso no existe en el DOM
         gsap.to(loader, { opacity: 0, duration: 0.5, delay: 0.8, onComplete: () => loader.style.display = 'none' });
     }
 };
